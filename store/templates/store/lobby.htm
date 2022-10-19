@@ -7,14 +7,41 @@
     <title>Lobby</title>
 </head>
 <body>
-    <center><h1>Lobby Chat!</h1></center>
+    <center>
+        <h1>Lobby Chat!</h1>
+        <div id="msgBox"></div>
+        <div>----------------------------------------</div>
+        <input type="text" id="text2send" placeholder="enter your message"/>
+        <input type="submit" id="sendBtn" value="send msg" />
+    </center>
     <script type="text/javascript">
         let url = `ws://${window.location.host}/ws/socket-server/`;
         const storeSocket = new WebSocket(url);
+        const msgBox    = document.getElementById("msgBox");
+        const text2send = document.getElementById("text2send");
+        const sendBtn   = document.getElementById("sendBtn");
+
+        sendBtn.addEventListener("click", (e) =>{
+            e.preventDefault();
+            storeSocket.send(text2send.value);
+            text2send.value = "";
+        })
+
         storeSocket.onmessage = function(e){
             let data = JSON.parse(e.data);
-            console.log("DATA: ", data);
+
+            if(data["type"] === "connection"){
+                console.log("DATA: ", data);
+            }else{
+                msgBox.innerHTML += `<div id="6">${data["msg"]}</div>`;
+            }
         }
+
+
+
+
+
+
     </script>
 </body>
 </html>
